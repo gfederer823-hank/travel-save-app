@@ -840,7 +840,7 @@ const handleManualSearchPlace = async () => {
           <Text style={{ color: "#111111", fontWeight: "600" }}>
             取消收藏
           </Text>
-        </Pressable>
+        </Pressable> 
       </View>
 
       <Text style={{ color: "#666666" }}>
