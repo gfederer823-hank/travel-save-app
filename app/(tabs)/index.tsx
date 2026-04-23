@@ -157,7 +157,7 @@ useEffect(() => {
     if (!trimmedUrl) return;
 
     try {
-      const res = await fetch("http://192.168.0.179:8081/api/analyze", {
+      const res = await fetch("https://travel-save-app.vercel.app/api/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
