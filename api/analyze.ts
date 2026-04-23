@@ -1,10 +1,22 @@
 export default async function handler(req: any, res: any) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
   try {
-    const body = req.body;
+    const method = req?.method ?? "POST";
+
+    if (method !== "POST") {
+      if (res) {
+        return res.status(405).json({ error: "Method not allowed" });
+      }
+      return;
+    }
+
+    let body: any = {};
+
+    if (req?.body) {
+      body = req.body;
+    } else if (typeof req?.json === "function") {
+      body = await req.json();
+    }
+
     const videoUrl = String(body.videoUrl || "").trim();
 
     console.log("API 被呼叫了！");
