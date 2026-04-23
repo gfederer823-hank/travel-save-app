@@ -1,24 +1,28 @@
-export async function POST(request: Request) {
+export default async function handler(req: any, res: any) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   try {
-    const body = await request.json();
+    const body = req.body;
     const videoUrl = String(body.videoUrl || "").trim();
 
     console.log("API 被呼叫了！");
     console.log("收到的 videoUrl:", videoUrl);
 
     if (!videoUrl) {
-      return Response.json({ error: "缺少影片網址" }, { status: 400 });
+      return res.status(400).json({ error: "缺少影片網址" });
     }
 
     const youtubeApiKey = process.env.YOUTUBE_API_KEY;
     const openaiApiKey = process.env.OPENAI_API_KEY;
 
     if (!youtubeApiKey) {
-      return Response.json({ error: "缺少 YOUTUBE_API_KEY" }, { status: 500 });
+      return res.status(500).json({ error: "缺少 YOUTUBE_API_KEY" });
     }
 
     if (!openaiApiKey) {
-      return Response.json({ error: "缺少 OPENAI_API_KEY" }, { status: 500 });
+      return res.status(500).json({ error: "缺少 OPENAI_API_KEY" });
     }
 
     // 1. 從網址抓 videoId
@@ -33,7 +37,7 @@ export async function POST(request: Request) {
     console.log("解析出的 videoId:", videoId);
 
     if (!videoId) {
-      return Response.json({
+      return res.status(200).json({
         places: [],
         error: "無法解析 YouTube 影片 ID",
       });
@@ -55,7 +59,7 @@ export async function POST(request: Request) {
     console.log("影片描述:", videoDescription);
 
     if (!videoTitle && !videoDescription) {
-      return Response.json({
+      return res.status(200).json({
         places: [],
         error: "抓不到影片標題與描述",
       });
@@ -109,13 +113,13 @@ ${videoDescription}
 
     try {
       const parsed = JSON.parse(text);
-      return Response.json(parsed);
+      return res.status(200).json(parsed);
     } catch (error) {
       console.log("JSON parse 失敗，text =", text);
-      return Response.json({ places: [] });
+      return res.status(200).json({ places: [] });
     }
   } catch (error) {
     console.log("analyze error:", error);
-    return Response.json({ error: "伺服器錯誤" }, { status: 500 });
+    return res.status(500).json({ error: "伺服器錯誤" });
   }
 }
