@@ -1,6 +1,6 @@
 export default async function handler(req: any, res: any) {
   try {
-    const method = req?.method ?? "POST";
+    const method = req && req.method ? req.method : "POST";
 
     if (method !== "POST") {
       if (res) {
@@ -11,11 +11,11 @@ export default async function handler(req: any, res: any) {
 
     let body: any = {};
 
-    if (req?.body) {
-      body = req.body;
-    } else if (typeof req?.json === "function") {
-      body = await req.json();
-    }
+    if (req && typeof req === "object" && "body" in req && req.body) {
+  body = req.body;
+} else if (req && typeof req?.json === "function") {
+  body = await req.json();
+}
 
     const videoUrl = String(body.videoUrl || "").trim();
 
