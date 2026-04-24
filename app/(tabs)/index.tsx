@@ -96,6 +96,7 @@ export default function HomeScreen() {
     );
 
     const data = await res.json();
+    
 
     const result = data.results?.[0];
     const location = result?.geometry?.location;
@@ -166,6 +167,7 @@ useEffect(() => {
       });
 
       const data = await res.json();
+      Alert.alert("API回傳", JSON.stringify(data));
 
       if (!res.ok) {
         alert(data.error || "分析失敗");
@@ -173,6 +175,10 @@ useEffect(() => {
       }
 
       const placeNames = data.places || [];
+      if (placeNames.length === 0) {
+  Alert.alert("沒有找到地點", "這支影片沒有分析出可查詢的地點");
+  return;
+}
 
 const currentSourceUrl = videoUrl;
 
@@ -199,7 +205,7 @@ setSavedPlaces((prev) => {
   return Array.from(uniqueMap.values());
 });
 
-      setVideoUrl("");
+     // setVideoUrl("");
     } catch (error) {
       console.log("API error:", error);
       alert("請求失敗，請稍後再試");
